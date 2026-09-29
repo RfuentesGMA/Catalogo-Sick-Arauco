@@ -15,14 +15,46 @@ body{
     background:#f5f5f5;
 }
 
-h1{
+#cabecera{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+#cabecera img{
+    height:80px;
+    width:auto;
+}
+
+#titulo{
+    text-align:center;
+}
+
+#titulo h1{
     color:#005a9c;
+    margin:0;
+}
+
+#titulo p{
+    margin-top:8px;
+    color:#666;
 }
 
 #buscador{
     width:400px;
     padding:12px;
     font-size:16px;
+    margin-bottom:10px;
+}
+
+#contador{
+    font-weight:bold;
+    color:#005a9c;
     margin-bottom:20px;
 }
 
@@ -48,7 +80,7 @@ tr:hover{
     background:#eef6ff;
 }
 
-img{
+td img{
     max-width:80px;
     max-height:80px;
 }
@@ -72,7 +104,22 @@ img{
 
 <body>
 
-<h1>Catálogo SICK Contrato Marco ARAUCO</h1>
+<div id="cabecera">
+
+    <img
+    src="https://rfuentesgma.github.io/Catalogo-Sick-Arauco/Logo%20GMA.png"
+    alt="GMA">
+
+    <div id="titulo">
+        <h1>Cat1>
+        <p>Portal de consulta de productos SICK</p>
+    </div>
+
+    <img
+    src="https://arauco.com/chile/wp-content/uploads/sites/14/2017/07/logo-arauco-1.png"
+    alt="ARAUCO">
+
+</div>
 
 <input
 type="text"
@@ -167,15 +214,21 @@ fetch("Arauco.csv")
     }
 
     document.getElementById("datos").innerHTML = html;
- 
+
     document.getElementById("contador").innerHTML =
     "Total productos: " + (filas.length - 1);
 
 })
 
 .catch(error => {
+
     console.error(error);
+
+    document.getElementById("contador").innerHTML =
+    "Error al cargar catálogo";
+
 });
+
 function buscar(){
 
     let filtro = document
