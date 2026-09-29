@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Catálogo SICK Contrato Marco ARAUCO</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    margin:20px;
+    background:#f5f5f5;
+}
+
+h1{
+    color:#005a9c;
+}
+
+#buscador{
+    width:400px;
+    padding:12px;
+    font-size:16px;
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th{
+    background:#005a9c;
+    color:white;
+    padding:12px;
+}
+
+td{
+    border:1px solid #ddd;
+    padding:10px;
+    vertical-align:middle;
+}
+
+tr:hover{
+    background:#eef6ff;
+}
+
+img{
+    max-width:80px;
+    max-height:80px;
+}
+
+.btn{
+    background:#005a9c;
+    color:white;
+    padding:6px 10px;
+    text-decoration:none;
+    border-radius:4px;
+    display:inline-block;
+}
+
+.btn:hover{
+    background:#003f70;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Catálogo SICK Contrato Marco ARAUCO</h1>
+
+<input
+type="text"
+id="buscador"
+placeholder="Buscar SAP, Part No o Modelo..."
+onkeyup="buscar()">
+
+<p id="contador">Cargando productos...</p>
+
+<table id="tabla">
+
+<thead>
+<tr>
+    <th>SAP</th>
+    <th>Part No</th>
+    <th>Modelo</th>
+    <th>Imagen</th>
+    <th>Descripción</th>
+    <th>Producto</th>
+    <th>Ficha Técnica</th>
+</tr>
+</thead>
+
+<tbody id="datos">
+</tbody>
+
+</table>
+
+<script>
+
+fetch("Arauco.csv")
+.then(response => response.text())
+.then(data => {
+
+    let filas = data.split("\n");
+
+    let html = "";
+
+    for(let i=1;i<filas.length;i++){
+
+        let col = filas[i].split(";");
+
+        if(col.length > 10){
+
+            let sap = col[0]?.trim() || "";
+            let partNo = col[1]?.trim() || "";
+            let modelo = col[2]?.trim() || "";
+            let descripcion = col[3]?.trim() || "";
+
+            let imagen = col[7]?.trim() || "";
+            let producto = col[8]?.trim() || "";
+            let pdf = col[11]?.trim() || "";
+
+            html += `
+            <tr>
+
+                <td>${sap}</td>
+
+                <td>${partNo}</td>
+
+                <td>${modelo}</td>
+
+                <td>
+                    ${
+                        imagen.startsWith("http")
+                        ? `<img src="${imagen}" loading="lazy">`
+                        : ''
+                    }
+                </td>
+
+                <td>${descripcion}</td>
+
+                <td>
+                    ${
+                        producto.startsWith("http")
+                        ? `<a class="btn" href="${producto}" target="_blank">Ver Producto</a>`
+                        : ''
+                    }
+                </td>
+
+                <td>
+                    ${
+                        pdf.startsWith("http")
+                        ? `<a class="btn" href="${pdf}" target="_blank">PDF</a>`
+                        : ''
+                    }
+                </td>
+
+            </tr>
+            `;
+        }
+    }
+
+    document.getElementById("datos").innerHTML = html;
+ 
+    document.getElementById("contador").innerHTML =
+    "Total productos: " + (filas.length - 1);
+
+})
+
+.catch(error => {
+    console.error(error);
+});
+function buscar(){
+
+    let filtro = document
+        .getElementById("buscador")
+        .value
+        .toUpperCase();
+
+    let filas = document.querySelectorAll("#datos tr");
+
+    let visibles = 0;
+
+    filas.forEach(fila => {
+
+        let texto = fila.textContent.toUpperCase();
+
+        if(texto.includes(filtro)){
+            fila.style.display = "";
+            visibles++;
+        }else{
+            fila.style.display = "none";
+        }
+
+    });
+
+    document.getElementById("contador").innerHTML =
+    "Productos encontrados: " + visibles;
+}
+
+</script>
+
+</body>
+</html>
